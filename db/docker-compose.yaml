@@ -1,0 +1,12 @@
+version: "3"
+services:
+  mysql_db:
+    image: pavank830/mysql:latest
+    command: --bind-address=* --default-authentication-plugin=mysql_native_password
+    env_file:
+      - mysql.env
+    ports:
+      - "3307:3306"
+    volumes:
+      - /var/tmp/mysql_data:/var/lib/mysql
+    restart: unless-stopped
