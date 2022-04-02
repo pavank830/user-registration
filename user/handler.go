@@ -3,7 +3,6 @@ package user
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -49,12 +48,10 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	fmt.Println("-----> 1")
 	if emailCheck {
 		http.ServeFile(w, r, "login.html")
 		return
 	}
-	fmt.Println("-----> 1", emailCheck)
 	id := uuid.New()
 	err = hashPasswordAndAddUser(req.UserData, id.String())
 	if err != nil {
@@ -109,7 +106,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(code)
 		return
 	}
-	fmt.Println("login --> id", id)
 	jwtToken, err := utils.GenerateJWT(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

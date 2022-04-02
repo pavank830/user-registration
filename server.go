@@ -76,7 +76,7 @@ func starterMiddleware(next http.Handler) http.Handler {
 		if _, ok := NoAuth[req.RequestURI]; !ok {
 			log.Println("jwt token verification")
 			authHeader := strings.Split(req.Header.Get("Authorization"), "Bearer ")
-			id, code, errmsg := validateJWTToken(authHeader)
+			id, code, errmsg := ValidateJWTToken(authHeader)
 			if errmsg != "" || code != 0 {
 				resp.WriteHeader(code)
 				resp.Write([]byte(errmsg))
@@ -85,14 +85,6 @@ func starterMiddleware(next http.Handler) http.Handler {
 			req.Header.Set(utils.HeaderUserID, id)
 			if len(authHeader) > 0 {
 				req.Header.Set(utils.HeaderJWT, authHeader[1])
-			}
-			fmt.Println("------> id", id)
-			fmt.Println("------> id", authHeader[1])
-			// check if token blacklisted
-			if user.CheckInBlackList(authHeader[1]) {
-				resp.WriteHeader(http.StatusUnauthorized)
-				resp.Write([]byte(utils.ErrInvalidToken.Error()))
-				return
 			}
 		}
 		next.ServeHTTP(resp, req)
@@ -119,7 +111,8 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("defaultHandler Duration: %s %s ", r.Method, r.RequestURI)
 }
 
-func validateJWTToken(authHeader []string) (string, int, string) {
+// ValidateJWTToken -- validate jwt token
+func ValidateJWTToken(authHeader []string) (string, int, string) {
 	var code int
 	var errmsg string
 	var id string
@@ -157,11 +150,16 @@ func validateJWTToken(authHeader []string) (string, int, string) {
 		errmsg = utils.ErrInvalidToken.Error()
 		return id, code, errmsg
 	}
+	// check if token blacklisted
+	if user.CheckInBlackList(authHeader[1]) {
+		code = http.StatusUnauthorized
+		errmsg = utils.ErrInvalidToken.Error()
+		return id, code, errmsg
+	}
 
 	switch idt := claim["id"].(type) {
 	case string:
 		id = idt
-		fmt.Println("------> id 10", idt, id)
 	default:
 		log.Println("token invalid,format")
 		code = http.StatusUnauthorized

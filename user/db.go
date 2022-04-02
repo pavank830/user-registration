@@ -2,7 +2,6 @@ package user
 
 import (
 	"database/sql"
-	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -67,14 +66,11 @@ func getFromBlackList(token string) (bool, error) {
 	}
 	defer db.Close()
 	var id int
-	fmt.Println("------>1", tokenCheck)
 	err = db.QueryRow("SELECT id FROM blacklist WHERE token=?", token).Scan(&id)
 	if id == 0 && err == sql.ErrNoRows {
 		err = nil
 		tokenCheck = false
 	}
-	fmt.Println("----> row", err)
-	fmt.Println("------>1", tokenCheck)
 	return tokenCheck, err
 }
 

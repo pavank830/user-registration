@@ -49,20 +49,17 @@ func validateuserLogin(email, password string) (string, int, error) {
 
 // CheckInBlackList -- chekc the jwt token in backlist table
 func CheckInBlackList(token string) bool {
-	fmt.Println("------>1")
 	check, err := getFromBlackList(token)
 	if err != nil {
 		log.Println("error checking the token from blacklist table:", err)
 		check = true
 	}
-	fmt.Println("------>1", check)
 	return check
 }
 
 // getUserProfile -- get user profile from cache is exists, if not get from db and add to cache
 func getUserProfile(id string) (*User, error) {
 	var err error
-	fmt.Println("------> id", id)
 	user := getFromCache(id)
 	if user == nil {
 		user, err = getUserDataFromDB(id)
