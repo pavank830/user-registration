@@ -1,19 +1,19 @@
 # user-registration
-## used mysql database as conatiner, backend code in golang and used go-cache for caching
+## used mysql database as container, backend code in golang and used go-cache for caching
 
 ## Steps to build application
 ```bash
 # commands shown below run at the root of the project directory
-1. To build golang code binary and mysql custom image
+1. To build golang code binary and mysql db custom image
   make all
 ```
 
-## Steps to run mysql container
+## Steps to run mysql db container
 ```bash
 # commands shown below run at the root of the project directory
  mkdir -p /var/tmp/mysql_data
  cd ./db
- docker-compose up
+ docker-compose up # sql port 3307
 ```
 
 ## Steps to run user-registration binary
@@ -32,8 +32,8 @@
      ip = docker inspect db_mysql_db_1 | grep IPAddres 
 
      SELECT host, user FROM mysql.user;
-     CREATE USER 'pavan'@'<ip/host>' IDENTIFIED BY 'pavan';
-     GRANT ALL ON registration.* TO 'pavan'@'<ip/host>';
+     CREATE USER 'pavan'@'<ip/host>' IDENTIFIED BY 'kumar';
+     GRANT ALL ON registration.* TO 'kumar'@'<ip/host>';
   
       ./bin/userRegistration -db "kumar:kumar@tcp(127.0.0.1:3307)/registration" -port "60010"
   
