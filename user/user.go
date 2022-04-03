@@ -34,6 +34,9 @@ func validateuserLogin(email, password string) (string, int, error) {
 	var id string
 	userInfo, err := getLoginInfoFromEmail(email)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			err = fmt.Errorf("email doesn't exist")
+		}
 		return id, http.StatusInternalServerError, err
 	}
 	if userInfo == nil {
@@ -41,6 +44,7 @@ func validateuserLogin(email, password string) (string, int, error) {
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(userInfo.HashedPassword), []byte(password))
 	if err != nil {
+		err = fmt.Errorf("password mistmatch %v", err)
 		return id, http.StatusOK, err
 	}
 	id = userInfo.UserID
