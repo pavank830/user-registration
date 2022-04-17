@@ -64,6 +64,8 @@ func getRouter() *mux.Router {
 	router.HandleFunc(user.LoginPath, user.Login).Methods(http.MethodPost)
 	router.HandleFunc(user.LogoutPath, user.Logout).Methods(http.MethodPost)
 	router.HandleFunc(user.ProfilePath, user.GetProfile).Methods(http.MethodGet)
+	router.HandleFunc(user.UpdateNamePath, user.UpdateUserName).Methods(http.MethodPut)
+	router.HandleFunc(user.DeleteUserPath, user.DeleteUser).Methods(http.MethodDelete)
 	router.NotFoundHandler = http.HandlerFunc(defaultHandler)
 	return router
 }

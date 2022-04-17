@@ -2,10 +2,12 @@ package user
 
 // api paths
 const (
-	SignUpPath  = "/api/signup"
-	LoginPath   = "/api/login"
-	LogoutPath  = "/api/logout"
-	ProfilePath = "/api/profile"
+	SignUpPath     = "/api/signup"
+	LoginPath      = "/api/login"
+	LogoutPath     = "/api/logout"
+	ProfilePath    = "/api/profile"
+	UpdateNamePath = "/api/update/name"
+	DeleteUserPath = "/api/user"
 )
 
 // User -- contains user basic info
@@ -14,6 +16,12 @@ type User struct {
 	LastName  string `json:"lastname"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
+}
+
+// UpdateNameReq -- update user name req
+type UpdateNameReq struct {
+	FirstName string `json:"firstname"`
+	LastName  string `json:"lastname"`
 }
 
 //SignUpReq -- contains user basic info

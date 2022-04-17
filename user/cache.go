@@ -27,3 +27,11 @@ func getFromCache(id string) *User {
 	}
 	return nil
 }
+
+func updateInCache(id string, user User) {
+	userCache.Replace(id, user, cache.DefaultExpiration)
+}
+
+func deleteFromCache(id string) {
+	userCache.Delete(id)
+}

@@ -74,3 +74,24 @@ func getUserProfile(id string) (*User, error) {
 	}
 	return user, err
 }
+
+func updateUser(id, firstName, lastName string) error {
+	err := updateUserNameDB(id, firstName, lastName)
+	if err != nil {
+		return err
+	}
+	user, err := getUserDataFromDB(id)
+	if user != nil && err == nil {
+		updateInCache(id, *user)
+	}
+	return nil
+}
+
+func deleteUserAccount(id string) error {
+	err := deleteUserFromDB(id)
+	if err != nil {
+		return err
+	}
+	deleteFromCache(id)
+	return nil
+}

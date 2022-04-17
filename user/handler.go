@@ -179,3 +179,61 @@ func GetProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	resp.User = *userInfo
 }
+
+// UpdateUserName - api to update last name
+func UpdateUserName(w http.ResponseWriter, r *http.Request) {
+	resp := APIResp{
+		ResponseCode: utils.ResponseOK,
+	}
+	var err error
+	var req UpdateNameReq
+
+	if err := utils.ParseRequest(w, r, &req); err != nil {
+		return
+	}
+
+	defer func() {
+		if err != nil {
+			resp.ResponseCode = utils.ResponseFailed
+			resp.ResponseDescription = err.Error()
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+		out, _ := json.Marshal(resp)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Add("Content-Type", "application/json")
+		w.Write(out)
+	}()
+	err = updateUser(r.Header.Get(utils.HeaderUserID), req.FirstName, req.LastName)
+}
+
+// DeleteUser --delete user account
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	resp := APIResp{
+		ResponseCode: utils.ResponseOK,
+	}
+	var err error
+	defer func() {
+		if err != nil {
+			resp.ResponseCode = utils.ResponseFailed
+			resp.ResponseDescription = err.Error()
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+		out, _ := json.Marshal(resp)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Add("Content-Type", "application/json")
+		w.Write(out)
+	}()
+	err = deleteUserAccount(r.Header.Get(utils.HeaderUserID))
+	if err != nil {
+		return
+	}
+	err = addToBlackList(r.Header.Get(utils.HeaderJWT))
+	if err != nil {
+		return
+	}
+	resp.ResponseDescription = "user account deleted"
+}

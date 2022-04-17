@@ -85,3 +85,23 @@ func getUserDataFromDB(id string) (*User, error) {
 		&userInfo.FirstName, &userInfo.LastName)
 	return &userInfo, err
 }
+
+func updateUserNameDB(id, firstName, lastName string) error {
+	db, err := createDBConn()
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+	err = db.QueryRow("UPDATE user SET firstname =?,lastname=? WHERE id=?", id).Scan(firstName, lastName, id)
+	return err
+}
+
+func deleteUserFromDB(id string) error {
+	db, err := createDBConn()
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+	err = db.QueryRow("DELETE FROM user WHERE id=?", id).Scan(id)
+	return err
+}
